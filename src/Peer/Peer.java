@@ -2,6 +2,7 @@ package Peer;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,8 +24,10 @@ public class Peer {
 	public static int mdrPort = 0;
 	
 	public static String id = null;
+	public static int space = 0;
+	public static MulticastSocket socket;
 
-	public static void main(String[] args) throws UnknownHostException {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
 		/*
@@ -40,7 +43,7 @@ public class Peer {
 		 */
 
 		//Creating directory and count file if it doesnt exist
-		id = args[0];
+		
 		
 		Path path = Paths.get(".\\Peer_" + args[0]);
 		Path countfile = Paths.get(".\\countPeer_" + args[0] + ".txt");
@@ -64,7 +67,10 @@ public class Peer {
 			}
 		}
 
-		//initiating Addresses and Ports
+		//initiating stuff
+		
+		id = args[0];
+		
 
 		//mc
 		mcAddress = InetAddress.getByName(args[1]);
@@ -77,6 +83,9 @@ public class Peer {
 		//mdr
 		mdrAddress = InetAddress.getByName(args[5]);
 		mdrPort = Integer.parseInt(args[6]);
+		
+		space = Integer.parseInt(args[7]);
+		socket = new MulticastSocket();
 		
 		
 		MClistener mcList = new MClistener(mcAddress,mcPort);
