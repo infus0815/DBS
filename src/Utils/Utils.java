@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class Utils {
 
 
 	public static final String VERSION = "1.0";
 	public static final String CRLF = "\r\n";
+	
+	public static Random random = new Random();
 
 	public String generateFID(String fileID, String serverId, String dateModified) {
 
