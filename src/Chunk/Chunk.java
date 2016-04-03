@@ -6,6 +6,7 @@ public class Chunk {
 	public String id;
 	public int replicationDegree;
 	public byte[] data;
+	public String peerId;
 
 	public Chunk(String fileId, int chunkNumber, int replicationDegree, byte[] data) {
 		this.id = fileId + "_" + chunkNumber;

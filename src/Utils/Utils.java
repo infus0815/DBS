@@ -14,7 +14,7 @@ public class Utils {
 	
 	public static Random random = new Random();
 
-	public String generateFID(String fileID, String serverId, String dateModified) {
+	public static String generateFID(String fileID, String serverId, String dateModified) {
 
 		MessageDigest digest = null;
 

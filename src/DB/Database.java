@@ -52,6 +52,7 @@ public class Database implements Serializable {
 	
 	public synchronized void removeChunkMirror(String chunkID, String peerID) {
 		chunkDB.get(chunkID).removeMirror(peerID);
+		Peer.saveDatabase();
 		
 	}
 
@@ -62,8 +63,10 @@ public class Database implements Serializable {
 	}
 
 	public synchronized int getChunkMirrorsSize(String chunkID) {
-		
-		return chunkDB.get(chunkID).mirrors.size();
+		if(chunkDB.get(chunkID) != null)
+			return chunkDB.get(chunkID).mirrors.size();
+		else
+			return 0;
 		
 	}
 

@@ -18,7 +18,8 @@ public class ListHandler extends Thread {
 	private final Message message;
 	
 	private static ArrayList<String> CHUNKSsent = new ArrayList<String>();
-	
+	private static ArrayList<String> PutchunksReceived = new ArrayList<String>();
+	public static ArrayList<String> storedReceived = new ArrayList<String>();
 
 	public ListHandler(Message message) {
 		this.message = message;
@@ -51,7 +52,12 @@ public class ListHandler extends Thread {
 			break;
 
 		case DELETE:
-			handleDELETE();
+			try {
+				handleDELETE();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 
 		case REMOVED:
@@ -66,9 +72,14 @@ public class ListHandler extends Thread {
 
 
 	private void handlePUTCHUNK() {
+		if(PutchunksReceived == null)
+			PutchunksReceived = new ArrayList<String>();
+		
 		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 
 		int replicationDeg = Integer.parseInt(message.headercontent[5]);
+		
+		PutchunksReceived.add(chunkId);
 
 		message.extractBody();
 
@@ -96,6 +107,7 @@ public class ListHandler extends Thread {
 		String senderId = message.headercontent[2];
 
 		Peer.database.addChunkMirror(chunkId, senderId);
+		storedReceived.add(chunkId);
 
 	}
 
@@ -138,7 +150,7 @@ public class ListHandler extends Thread {
 	}
 
 
-	private void handleDELETE() {
+	private void handleDELETE() throws IOException {
 		String fileId = message.headercontent[3];
 
 		ArrayList<String> chunksToBeDeleted = Peer.database.getChunkIDsOfFile(fileId);
@@ -154,6 +166,42 @@ public class ListHandler extends Thread {
 	private void handleREMOVED() {
 		System.out.println("REMOVED");
 		//TODO
+		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
+		String peerId = message.headercontent[2];
+		
+		PutchunksReceived.clear();
+
+		if (Peer.database.containsChunk(chunkId)) {
+			// updating available mirrors of chunk
+			Peer.database.removeChunkMirror(chunkId, peerId);
+
+			int currentRep = Peer.database.getChunkMirrorsSize(chunkId);
+			int desiredRep = Peer.database.getChunkReplicationDegree(chunkId);
+
+			if (currentRep < desiredRep) {
+				try {
+					Thread.sleep(Utils.random.nextInt(400));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				
+				boolean state = PutchunksReceived.contains(chunkId);
+
+
+				if (!state) {
+					try {
+						byte[] data = Filesystem.loadChunk(chunkId);
+
+						Chunk chunk = new Chunk(chunkId,desiredRep,data);
+
+						//new Thread(new BackupChunkInitiator(chunk)).start();//////////////
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 
 	}
 

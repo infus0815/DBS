@@ -19,6 +19,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 import DB.Database;
 import Filesystem.Filesystem;
+import Initiators.BackupInitiator;
+import Listeners.ListHandler;
+import Listeners.Listener;
 import Listeners.MClistener;
 import RMI.RMInterface;
 
@@ -96,12 +99,20 @@ public class Peer implements RMInterface {
 		}
 
 		Filesystem f = new Filesystem(args[0]);
+		
+		database = new Database();
 		loadDatabase();
 
 
 		//listeners
-		MClistener mcList = new MClistener(mcAddress,mcPort);
+		Listener mcList = new Listener(mcAddress,mcPort);
 		mcList.start();
+		Listener mdbList = new Listener(mdbAddress,mdbPort);
+		mdbList.start();
+		Listener mdrList = new Listener(mdrAddress,mdrPort);
+		mdrList.start();
+		
+		while(true);
 
 
 
@@ -155,6 +166,10 @@ public class Peer implements RMInterface {
 		switch(splitmessage[0]) {
 
 		case "BACKUP":
+			File file = new File(splitmessage[1]);
+			int repDeg = Integer.parseInt(splitmessage[2]);
+			BackupInitiator bi = new BackupInitiator(file,repDeg);
+			bi.start();
 
 			break;
 		case "RESTORE":
