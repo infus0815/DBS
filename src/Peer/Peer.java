@@ -20,6 +20,7 @@ import java.rmi.server.UnicastRemoteObject;
 import DB.Database;
 import Filesystem.Filesystem;
 import Initiators.BackupInitiator;
+import Initiators.RestoreInitiator;
 import Listeners.ListHandler;
 import Listeners.Listener;
 import Listeners.MClistener;
@@ -160,19 +161,23 @@ public class Peer implements RMInterface {
 
 	public String tarefa(String message) {
 		String str;
+		File file;
 
 		String[] splitmessage = message.split(" ");
 
 		switch(splitmessage[0]) {
 
 		case "BACKUP":
-			File file = new File(splitmessage[1]);
+			file = new File(splitmessage[1]);
 			int repDeg = Integer.parseInt(splitmessage[2]);
 			BackupInitiator bi = new BackupInitiator(file,repDeg);
 			bi.start();
 
 			break;
 		case "RESTORE":
+			file = new File(splitmessage[1]);
+			RestoreInitiator ri = new RestoreInitiator(file);
+			ri.start();
 			break;
 		case "DELETE":
 			break;

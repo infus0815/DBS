@@ -13,6 +13,7 @@ import Peer.Peer;
 import Peer.Sender;
 import Utils.Utils;
 import Chunk.Chunk;
+import DB.Fileinfo;
 
 public class BackupInitiator extends Thread {
 	
@@ -26,7 +27,6 @@ public class BackupInitiator extends Thread {
 
 	@Override
 	public void run() {
-		
 		
 
 		String fileID = Utils.generateFID(file.getName(),Peer.id,String.valueOf(file.lastModified()));
@@ -56,8 +56,12 @@ public class BackupInitiator extends Thread {
 				Chunk chunk = new Chunk(fileID, i, replicationDegree, chunkData);
 
 				ChunkBackup(chunk);
+				
+			
 
 			}
+			
+			Peer.database.addBackupFile(file.getName(),	new Fileinfo(fileID, numChunks));
 
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR: File not found");

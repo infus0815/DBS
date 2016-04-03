@@ -47,6 +47,7 @@ public class Filesystem {
 		
 		Filesystem.chunksPath = path;
 		Filesystem.countfile = countfile;
+		Filesystem.restoresPath = restores;
 		loadNumberOfChunks();
 
 
@@ -66,7 +67,6 @@ public class Filesystem {
 	}
 	
 	public static final void saveChunk(String chunkId, int replicationDegree, byte[] data) throws IOException {
-		System.out.println(chunksPath.toString());
 		FileOutputStream out = new FileOutputStream(chunksPath.toString() + "\\" + chunkId);
 		out.write(data);
 		out.close();
@@ -123,7 +123,9 @@ public class Filesystem {
 
 	public static final void saveFile(String fileName, byte[] data)	throws IOException {
 		
-		FileOutputStream out = new FileOutputStream(restoresPath.toString()+ "\\" + fileName);
+		System.out.println(restoresPath.toString() + "\\" + fileName);
+		
+		FileOutputStream out = new FileOutputStream(restoresPath.toString() + "\\" + fileName);
 		out.write(data);
 		out.close();
 		

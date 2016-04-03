@@ -16,10 +16,11 @@ import Utils.Utils;
 public class ListHandler extends Thread {
 
 	private final Message message;
-	
+
 	private static ArrayList<String> CHUNKSsent = new ArrayList<String>();
 	private static ArrayList<String> PutchunksReceived = new ArrayList<String>();
 	public static ArrayList<String> storedReceived = new ArrayList<String>();
+	public static ArrayList<Chunk> chunksReceived = new ArrayList<Chunk>();
 
 	public ListHandler(Message message) {
 		this.message = message;
@@ -74,27 +75,30 @@ public class ListHandler extends Thread {
 	private void handlePUTCHUNK() {
 		if(PutchunksReceived == null)
 			PutchunksReceived = new ArrayList<String>();
-		
-		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 
-		int replicationDeg = Integer.parseInt(message.headercontent[5]);
-		
-		PutchunksReceived.add(chunkId);
+		if (Peer.database.canSaveChunksOf(message.headercontent[3])) {
 
-		message.extractBody();
+			String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 
-		if (Filesystem.numberOfFiles < Peer.space) {
-			try {
-				Thread.sleep(Utils.random.nextInt(400));
-				if (Filesystem.fileExists(chunkId.toString())) {
-					Sender.sendSTORED(chunkId);
+			int replicationDeg = Integer.parseInt(message.headercontent[5]);
+
+			PutchunksReceived.add(chunkId);
+
+			message.extractBody();
+
+			if (Filesystem.numberOfFiles < Peer.space) {
+				try {
+					Thread.sleep(Utils.random.nextInt(400));
+					if (Filesystem.fileExists(chunkId.toString())) {
+						Sender.sendSTORED(chunkId);
+					}
+					else {
+						Sender.sendSTORED(chunkId);
+						Filesystem.saveChunk(chunkId, replicationDeg, message.body);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				else {
-					Sender.sendSTORED(chunkId);
-					Filesystem.saveChunk(chunkId, replicationDeg, message.body);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 
@@ -102,7 +106,7 @@ public class ListHandler extends Thread {
 	}
 
 	private void handleSTORED() {
-		
+
 		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 		String senderId = message.headercontent[2];
 
@@ -129,7 +133,7 @@ public class ListHandler extends Thread {
 			if (!chunkAlreadySent) {
 				try {
 					byte[] data = Filesystem.loadChunk(chunkId);
-					
+
 					Chunk chunk = new Chunk(chunkId, 1, data);
 
 					Sender.sendCHUNK(chunk);
@@ -146,6 +150,11 @@ public class ListHandler extends Thread {
 	private void handleCHUNK() {
 		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 		CHUNKSsent.add(chunkId);
+
+		message.extractBody();
+
+		Chunk chunk = new Chunk(chunkId,1,message.body);
+		chunksReceived.add(chunk);
 
 	}
 
@@ -168,7 +177,7 @@ public class ListHandler extends Thread {
 		//TODO
 		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 		String peerId = message.headercontent[2];
-		
+
 		PutchunksReceived.clear();
 
 		if (Peer.database.containsChunk(chunkId)) {
@@ -185,7 +194,7 @@ public class ListHandler extends Thread {
 					e.printStackTrace();
 				}
 
-				
+
 				boolean state = PutchunksReceived.contains(chunkId);
 
 

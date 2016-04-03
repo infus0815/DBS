@@ -11,12 +11,17 @@ public class Database implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private volatile HashMap<String, ChunkInfo> chunkDB;
+	private volatile HashMap<String, Fileinfo> filesBackup;
 
 	public Database() {
 		
 		chunkDB = new HashMap<String, ChunkInfo>();
+		filesBackup = new HashMap<String, Fileinfo>();
 		
 	}
+	
+	
+	//chunk system
 
 	public synchronized boolean containsChunk(String chunkId) {
 		
@@ -93,6 +98,44 @@ public class Database implements Serializable {
 		}
 		return chunkIDs;
 	}
+	
+	
+	//file backup system
+	
+	public synchronized void addBackupFile(String fileName,	Fileinfo fileinfo) {
+		
+		filesBackup.put(fileName, fileinfo);
+
+		Peer.saveDatabase();
+		
+	}
+
+	public synchronized void removeBackupFile(String fileName) {
+		filesBackup.remove(fileName);
+
+		Peer.saveDatabase();
+
+	}
+
+	public synchronized boolean fileHasBeenBackedUp(String fileName) {
+		return filesBackup.containsKey(fileName);
+	}
+
+	public synchronized Fileinfo getFileInfo(String fileName) {
+		return filesBackup.get(fileName);
+	}
+
+	public synchronized boolean canSaveChunksOf(String fileID) {
+		for (Fileinfo fileInfo : filesBackup.values()) {
+			if (fileInfo.fileId.equals(fileID))
+				return false;
+		}
+
+		return true;
+	}
+
+	
+	
 
 
 
