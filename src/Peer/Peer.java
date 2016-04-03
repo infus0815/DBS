@@ -20,6 +20,7 @@ import java.rmi.server.UnicastRemoteObject;
 import DB.Database;
 import Filesystem.Filesystem;
 import Initiators.BackupInitiator;
+import Initiators.DeleteInitiator;
 import Initiators.RestoreInitiator;
 import Listeners.ListHandler;
 import Listeners.Listener;
@@ -180,6 +181,9 @@ public class Peer implements RMInterface {
 			ri.start();
 			break;
 		case "DELETE":
+			file = new File(splitmessage[1]);
+			DeleteInitiator di = new DeleteInitiator(file);
+			di.start();
 			break;
 		case "RECLAIM":
 			break;
