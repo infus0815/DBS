@@ -28,7 +28,7 @@ public class TestApp {
 				str= cmd+" "+args[2];
 			}
 			else if (cmd.equals("RECLAIM") && args.length == 3){		// doesnt need replication degree (?)
-				str= cmd;
+				str= cmd+" "+args[2];
 			}
 			else{
 				System.out.println("USAGE: java TestApp <remote_object_name> <sub_protocol> <opnd_1> <opnd_2>");

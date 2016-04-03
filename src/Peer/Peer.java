@@ -22,6 +22,7 @@ import Filesystem.Filesystem;
 import Initiators.BackupInitiator;
 import Initiators.DeleteInitiator;
 import Initiators.RestoreInitiator;
+import Initiators.SpaceReclaimInitiator;
 import Listeners.ListHandler;
 import Listeners.Listener;
 import Listeners.MClistener;
@@ -186,6 +187,9 @@ public class Peer implements RMInterface {
 			di.start();
 			break;
 		case "RECLAIM":
+			int space = Integer.parseInt(splitmessage[1]);
+			SpaceReclaimInitiator sri = new SpaceReclaimInitiator(space);
+			sri.start();
 			break;
 		default:
 			break;

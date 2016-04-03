@@ -35,10 +35,14 @@ public class RestoreInitiator extends Thread{
 				}
 
 			}
+			
+			int timeout = 0;
 
-			while(ListHandler.chunksReceived.size() < fileinfo.nChunks) {
+			while(ListHandler.chunksReceived.size() < fileinfo.nChunks && timeout < 4) {
 				try {
 					Thread.sleep(500);
+					System.out.println("Waiting for some chunks..");
+					timeout++;
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -48,7 +52,6 @@ public class RestoreInitiator extends Thread{
 			//restoring file
 			byte[] fileData = new byte[0];
 			
-			System.out.println(ListHandler.chunksReceived.toString());
 
 			for (int i = 0; i < fileinfo.nChunks; i++) {
 				Chunk rightChunk = null;
@@ -58,13 +61,15 @@ public class RestoreInitiator extends Thread{
 					int chunkn = Integer.parseInt(ids[1]);
 					if (chunkn == i && ids[0].equals(fileinfo.fileId)) {
 						rightChunk = chunk;
-						System.out.println(rightChunk.id);
 						break;
 					}
 				}
 
-				if (rightChunk == null)
+				if (rightChunk == null) {
 					System.out.println("Missing file chunk.");
+					return;
+				}
+				
 
 				try {
 					fileData = Utils.joinArrays(fileData, rightChunk.data);

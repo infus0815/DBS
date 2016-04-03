@@ -47,6 +47,8 @@ public class Sender extends Thread {
 		header += " " + chunk.replicationDegree;
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: PUTCHUNK --> Fileid: " + chunkidsplit[0] + " Chunkid: " + chunkidsplit[1]);
 
 		sendpacketMDB(Utils.joinArrays(header.getBytes(), chunk.data));
 	}
@@ -59,6 +61,8 @@ public class Sender extends Thread {
 		header += " " + chunkidsplit[1];
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: STORED --> Fileid: " + chunkidsplit[0] + " Chunkid: " + chunkidsplit[1]);
 
 		sendpacketMC(header.getBytes());
 	}
@@ -71,6 +75,8 @@ public class Sender extends Thread {
 		header += " " + chunkidsplit[1];
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: GETCHUNK --> Fileid: " + chunkidsplit[0] + " Chunkid: " + chunkidsplit[1]);
 
 		sendpacketMC(header.getBytes());
 	}
@@ -83,6 +89,8 @@ public class Sender extends Thread {
 		header += " " + chunkidsplit[1];
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: CHUNK --> Fileid: " + chunkidsplit[0] + " Chunkid: " + chunkidsplit[1]);
 
 		sendpacketMDR(Utils.joinArrays(header.getBytes(), chunk.data));
 	}
@@ -93,6 +101,8 @@ public class Sender extends Thread {
 		header += " " + fileId;
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: DELETE --> Fileid: " + fileId);
 
 		sendpacketMC(header.getBytes());
 	}
@@ -105,6 +115,8 @@ public class Sender extends Thread {
 		header += " " + chunkidsplit[1];
 		header += " " + Utils.CRLF;
 		header += Utils.CRLF;
+		
+		System.out.println("SENDING: REMOVE --> Fileid: " + chunkidsplit[0] + " Chunkid: " + chunkidsplit[1]);
 
 		sendpacketMC(header.getBytes());
 	}

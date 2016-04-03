@@ -62,7 +62,12 @@ public class ListHandler extends Thread {
 			break;
 
 		case REMOVED:
-			handleREMOVED();
+			try {
+				handleREMOVED();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 
 		default:
@@ -172,8 +177,7 @@ public class ListHandler extends Thread {
 
 	}
 
-	private void handleREMOVED() {
-		System.out.println("REMOVED");
+	private void handleREMOVED() throws IOException {
 		//TODO
 		String chunkId = message.headercontent[3] + "_" + message.headercontent[4];
 		String peerId = message.headercontent[2];
@@ -203,8 +207,8 @@ public class ListHandler extends Thread {
 						byte[] data = Filesystem.loadChunk(chunkId);
 
 						Chunk chunk = new Chunk(chunkId,desiredRep,data);
+						Sender.sendPUTCHUNK(chunk);
 
-						//new Thread(new BackupChunkInitiator(chunk)).start();//////////////
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}

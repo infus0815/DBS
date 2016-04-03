@@ -41,7 +41,7 @@ public class Listener extends Thread {
 				else {
 					// ignore packets sent by this peer
 					if (!message.headercontent[2].equals(Peer.id)) {
-						System.out.println("Handling message");
+						System.out.println("RECEIVED: " + message.header);
 						ListHandler lhand = new ListHandler(message);
 						lhand.start();
 					}

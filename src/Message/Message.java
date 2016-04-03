@@ -14,6 +14,7 @@ public class Message {
 	public String[] headercontent = null;
 	public int lenght = 0;
 	public byte[] body = null;
+	public String header;
 	/*
 	public String MessageType = null;
 	public String Version = null;
@@ -37,11 +38,10 @@ public class Message {
 		ByteArrayInputStream stream = new ByteArrayInputStream(message);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		
-		String header;
+
 		
 		try {
 			header = reader.readLine();
-			System.out.println(header);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
