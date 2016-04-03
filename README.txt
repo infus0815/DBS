@@ -1,6 +1,6 @@
 
 COMO COMPILAR:
-	javac -d bin src/Chunk/*.java src/DB/*.java src/Filesystem/*.java src/Initiators/*.java src/Listeners/*.java src/Message/*.java src/Peer/*.java src/RMI/*.java src/Utils/*.java src/*.java
+	javac -d bin src/Chunk/*.java src/DB/*.java src/Filesystem/*.java src/Initiators/*.java src/Listeners/*.java src/Message/*.java src/Peer/*.java src/RMI/*.java src/Utils/*.java
 
 
 COMO EXECUTAR:
@@ -8,6 +8,7 @@ COMO EXECUTAR:
 	Exemplo de utilização:
 
 	1)LANÇAR RMI - TERMINAL 1:
+		cd bin
 		rmiregistry & (UNIX)
 		start rmiregistry (Windows)
 
@@ -34,3 +35,6 @@ COMO EXECUTAR:
 		PARA DELETE:
 			java RMI.TestApp 1 DELETE Tulips.jpg
 			(java RMI.TestApp 1 DELETE <file>)
+		PARA RECLAIM:
+			java RMI.TestApp 2 RECLAIM 3
+			(java RMI.TestApp <peer_id> RECLAIM <new_space_available_in_chunks>
