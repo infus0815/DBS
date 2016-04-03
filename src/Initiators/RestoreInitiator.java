@@ -27,18 +27,28 @@ public class RestoreInitiator extends Thread{
 			for (int i = 0; i < fileinfo.nChunks; i++) {
 				String chunkId = fileinfo.fileId + "_" + i;
 				Sender.sendGETCHUNK(chunkId);
+				try {
+					Thread.sleep(400);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			while(ListHandler.chunksReceived.size() < fileinfo.nChunks) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			//restoring file
 			byte[] fileData = new byte[0];
+			
+			System.out.println(ListHandler.chunksReceived.toString());
 
 			for (int i = 0; i < fileinfo.nChunks; i++) {
 				Chunk rightChunk = null;
@@ -48,6 +58,7 @@ public class RestoreInitiator extends Thread{
 					int chunkn = Integer.parseInt(ids[1]);
 					if (chunkn == i && ids[0].equals(fileinfo.fileId)) {
 						rightChunk = chunk;
+						System.out.println(rightChunk.id);
 						break;
 					}
 				}

@@ -23,9 +23,9 @@ public class Filesystem {
 	public Filesystem(String serverID) throws IOException {
 
 		//Creating directory and count file if it doesnt exist
-		Path path = Paths.get(".\\Peer_" + serverID + "_chunks");
-		Path restores = Paths.get(".\\Peer_" + serverID + "_restores");
-		Path countfile = Paths.get(".\\countPeer_" + serverID + ".data");
+		Path path = Paths.get("./Peer_" + serverID + "_chunks");
+		Path restores = Paths.get("./Peer_" + serverID + "_restores");
+		Path countfile = Paths.get("./countPeer_" + serverID + ".data");
 		if (!Files.exists(path)) {
 			try {
 				Files.createDirectories(path);
@@ -67,7 +67,7 @@ public class Filesystem {
 	}
 	
 	public static final void saveChunk(String chunkId, int replicationDegree, byte[] data) throws IOException {
-		FileOutputStream out = new FileOutputStream(chunksPath.toString() + "\\" + chunkId);
+		FileOutputStream out = new FileOutputStream(chunksPath.toString() + "/" + chunkId);
 		out.write(data);
 		out.close();
 
@@ -78,14 +78,14 @@ public class Filesystem {
 	
 	public static boolean fileExists(String name) {
 		
-		File file = new File(chunksPath.toString()+ "\\" + name);
+		File file = new File(chunksPath.toString()+ "/" + name);
 		return file.exists() && file.isFile();
 		
 	}
 	
 	public static final byte[] loadChunk(String chunkId) throws FileNotFoundException {
 		
-		File file = new File(chunksPath.toString()+ "\\" + chunkId);
+		File file = new File(chunksPath.toString()+ "/" + chunkId);
 		FileInputStream inputStream = new FileInputStream(file);
 
 		byte[] data = new byte[(int) file.length()];
@@ -101,7 +101,7 @@ public class Filesystem {
 	}
 	
 	public static final void deleteChunk(String chunkId) throws IOException {
-		File file = new File(chunksPath.toString()+ "\\" + chunkId);
+		File file = new File(chunksPath.toString()+ "/" + chunkId);
 		file.delete();
 		loadNumberOfChunks();
 	}
@@ -123,9 +123,9 @@ public class Filesystem {
 
 	public static final void saveFile(String fileName, byte[] data)	throws IOException {
 		
-		System.out.println(restoresPath.toString() + "\\" + fileName);
+		System.out.println(restoresPath.toString() + "/" + fileName);
 		
-		FileOutputStream out = new FileOutputStream(restoresPath.toString() + "\\" + fileName);
+		FileOutputStream out = new FileOutputStream(restoresPath.toString() + "/" + fileName);
 		out.write(data);
 		out.close();
 		
